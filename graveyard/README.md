@@ -16,3 +16,10 @@ curl -X POST $HOST/api/admin/config -H "x-admin-key: $ADMIN_KEY" -H 'content-typ
 ```
 Set the contract/RPC in `server/config/game.config.json` (`collection.nftContract`, `chain.rpcUrl`).
 See ARCHITECTURE.md for the on-chain/off-chain split and open decisions.
+
+## Check what the game sees for a real wallet
+```bash
+npm run check -- 0xHolderWalletAddress
+```
+Prints: RPC reachable?, which source answered (indexer = Blockscout, rpc = contract), each token's real image/traits/stats, and the on-chain owner check.
+Holdings come from the Blockscout API (`chain.indexerApi` in the config; override with `INDEXER_URL`), falling back to reading the contract directly.

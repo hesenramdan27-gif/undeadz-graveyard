@@ -35,8 +35,9 @@ export async function ownerOf(tokenId, maxAgeSec = 0) {
     const owner = (await nft().ownerOf(tokenId)).toLowerCase();
     ownerCache.set(tokenId, { owner, at: Date.now() });
     return owner;
-  } catch {
-    return null; // token does not exist
+  } catch (e) {
+    if (e.code === 'CALL_EXCEPTION') return null; // token does not exist
+    throw new Error('Could not reach Robinhood Chain right now. Please try again in a moment.');
   }
 }
 
@@ -73,6 +74,51 @@ export async function tokensOf(address) {
       scanCache = { at: Date.now(), map };
     }
     return (scanCache.map.get(addr) || []).slice(0, metadata.maxTokensShown);
+  }
+}
+
+// Blockscout API v2 lists every NFT a wallet holds, with image + attributes already resolved.
+const indexerBase = () => process.env.INDEXER_URL || getConfig().chain.indexerApi || '';
+const addrOf = (t) => String(t?.address_hash || (typeof t?.address === 'object' ? t.address?.hash : t?.address) || '').toLowerCase();
+
+async function fromIndexer(address) {
+  const base = indexerBase();
+  if (!base) return null;
+  const { collection, metadata } = getConfig();
+  const contract = collection.nftContract.toLowerCase();
+  const out = [];
+  let params = '';
+  for (let page = 0; page < 10; page++) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 8000);
+    try {
+      const res = await fetch(`${base}/addresses/${address}/nft?type=ERC-721${params}`, { signal: ctl.signal, headers: { accept: 'application/json' } });
+      if (!res.ok) throw new Error(`indexer HTTP ${res.status}`);
+      const data = await res.json();
+      for (const it of data.items || []) {
+        if (addrOf(it.token) !== contract) continue; // only THE UNDEADZ, not other collections
+        const md = it.metadata || {};
+        out.push({ tokenId: Number(it.id), meta: { name: md.name, image: it.image_url || md.image || md.image_url, attributes: md.attributes } });
+      }
+      if (!data.next_page_params) break;
+      params = '&' + new URLSearchParams(data.next_page_params).toString();
+    } finally { clearTimeout(timer); }
+  }
+  return out.filter((x) => Number.isInteger(x.tokenId)).sort((a, b) => a.tokenId - b.tokenId).slice(0, metadata.maxTokensShown);
+}
+
+// What does this wallet hold? Returns { source, items:[{tokenId, meta?}] }.
+export async function holdings(address) {
+  if (MOCK) return { source: 'mock', items: (await tokensOf(address)).map((tokenId) => ({ tokenId })) };
+  let indexerError = null;
+  try {
+    const items = await fromIndexer(address);
+    if (items && items.length) return { source: 'indexer', items };
+  } catch (e) { indexerError = e.message; }
+  try {
+    return { source: 'rpc', items: (await tokensOf(address)).map((tokenId) => ({ tokenId })) };
+  } catch (e) {
+    throw new Error(`Could not read your wallet's Undeadz${indexerError ? ` (${indexerError})` : ''}. ${e.message}`);
   }
 }
 

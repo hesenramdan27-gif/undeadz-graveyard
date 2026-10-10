@@ -42,22 +42,24 @@ h2{font-size:34px;margin-bottom:6px}
 .lead{max-width:46ch;color:#cfc8e6;margin-bottom:26px;font-size:18px}
 .hint{margin-top:14px;color:var(--dim);font-size:14px}
 .steps{list-style:none;padding:0;display:grid;gap:12px}
-.steps li{background:var(--stone);border:1px solid var(--line);border-radius:90px 90px 16px 16px;padding:18px 22px 16px 78px;position:relative;opacity:.55}
-.steps li::before{content:attr(data-step);position:absolute;left:20px;top:50%;translate:0 -50%;width:42px;height:42px;border-radius:50% 50% 8px 8px;background:var(--stone2);display:grid;place-items:center;font:700 20px var(--display);color:var(--dim)}
+.steps li{background:var(--stone);border:1px solid var(--line);border-radius:16px;padding:18px 22px 16px 78px;position:relative;opacity:.55}
+.steps li::before{content:attr(data-step);position:absolute;left:20px;top:50%;translate:0 -50%;width:42px;height:42px;border-radius:12px;background:var(--stone2);display:grid;place-items:center;font:700 20px var(--display);color:var(--dim)}
 .steps b{font:700 20px var(--display);display:block}.steps span{color:var(--dim);font-size:14px}
 .steps li.now{opacity:1;border-color:var(--slime)}.steps li.now::before{background:var(--slime);color:#14200a}
 .steps li.done{opacity:1}.steps li.done::before{content:"✓";background:var(--stone2);color:var(--slime)}
 .notice{margin-top:22px;padding:12px 16px;border-radius:12px;background:#3a1a2b;border:1px solid var(--blood);color:#ffd5e1}
 
-/* gravestone cards: arched top is the signature shape */
-.crypt{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
-.stone{background:linear-gradient(180deg,var(--stone2),var(--stone));border:2px solid var(--line);border-radius:120px 120px 18px 18px;padding:18px 16px 16px;cursor:pointer;text-align:center;transition:border-color .15s,transform .15s;width:100%;color:inherit}
-.stone:hover{border-color:var(--moon,#8f86c9);transform:translateY(-3px)}
+/* NFT cards: the real artwork leads, stats sit underneath */
+.crypt{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.stone{background:var(--stone);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;text-align:left;transition:border-color .15s,transform .15s,box-shadow .15s;width:100%;color:inherit;padding:0;display:block}
+.stone:hover{border-color:#8f86c9;transform:translateY(-3px)}
 .stone.sel{border-color:var(--slime);box-shadow:0 0 0 3px rgba(183,242,59,.2)}
-.stone .art{width:116px;height:116px;border-radius:50%;margin:6px auto 8px;overflow:hidden;background:var(--crypt);border:3px solid var(--line)}
+.stone .art{width:100%;aspect-ratio:1/1;background:var(--crypt);overflow:hidden}
 .stone .art img,.art svg{width:100%;height:100%;object-fit:cover;display:block}
-.stone h3{font-size:19px}
-.lv{display:inline-block;margin:4px 0 10px;padding:2px 12px;border-radius:99px;background:var(--crypt);color:var(--gold);font:700 14px var(--display)}
+.stone .body{padding:14px 16px 16px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.head h3{font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv{flex:none;padding:3px 11px;border-radius:99px;background:var(--crypt);color:var(--gold);font:700 13px var(--display)}
 .stats{display:grid;gap:5px;text-align:left;font-size:14px}
 .stat{display:grid;grid-template-columns:24px 62px 1fr 30px;align-items:center;gap:6px}
 .stat i{font-style:normal}.stat .bar{height:7px;border-radius:9px;background:var(--crypt);overflow:hidden}
@@ -66,13 +68,13 @@ h2{font-size:34px;margin-bottom:6px}
 .xp{margin-top:12px;font-size:13px;color:var(--dim);text-align:left}
 .xp .bar{height:8px;border-radius:9px;background:var(--crypt);overflow:hidden;margin-top:4px}.xp .bar b{display:block;height:100%;background:var(--gold)}
 .rec{margin-top:8px;font-size:13px;color:var(--dim)}
-.traits{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.traits{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px}
 .traits span{font-size:12px;padding:2px 9px;border-radius:99px;background:var(--crypt);color:var(--dim)}
 
 /* arena */
 .ring{display:grid;grid-template-columns:1fr 90px 1fr;gap:18px;align-items:start}
 .mid{text-align:center}.vs{font:700 44px var(--display);color:var(--blood)}.round{color:var(--dim);min-height:24px}
-.fighter .stone{cursor:default}.fighter .stone:hover{transform:none;border-color:var(--line)}
+.fighter .stone{cursor:default}.ring .stone .art{aspect-ratio:1/1}.fighter .stone:hover{transform:none;border-color:var(--line)}
 .fighter.enemy .stone{border-color:#6b2a45}
 .hp{margin:6px 0 10px}.hp .bar{height:16px;border-radius:99px;background:var(--crypt);overflow:hidden;border:1px solid var(--line)}
 .hp .bar b{display:block;height:100%;width:100%;background:var(--slime);transition:width .45s ease,background .3s}
@@ -112,7 +114,7 @@ tr:last-child td{border:0}td.r{font:700 18px var(--display);color:var(--gold)}
 @media(max-width:780px){
   .hero{grid-template-columns:1fr;gap:26px}
   .ring{grid-template-columns:1fr 1fr;gap:12px}.mid{grid-column:1/-1;order:-1}.vs{font-size:30px}
-  .stone{border-radius:80px 80px 16px 16px;padding:14px 10px}.stone .art{width:84px;height:84px}
+  .stone .body{padding:10px 10px 12px}
   .stat{grid-template-columns:20px 52px 1fr 26px;font-size:12px}
   .tabs{order:3;flex-basis:100%}
   h2{font-size:28px}

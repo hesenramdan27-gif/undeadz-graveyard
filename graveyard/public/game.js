@@ -161,14 +161,18 @@ function recText(r) { return `${r.battles} battles · ${r.wins} wins · ${r.loss
 function card(u, { tag = 'button', onClick } = {}) {
   const c = el(tag, 'stone' + (S.selected && S.selected.tokenId === u.tokenId ? ' sel' : ''));
   if (tag === 'button') { c.type = 'button'; c.onclick = onClick; }
-  c.append(avatar(u, u.name), el('h3', '', `#${u.tokenId}`), el('div', 'lv', `Level ${u.progress.level}`), statBlock(u.stats), xpBlock(u.progress), el('div', 'rec', recText(u.record)));
-  if (u.traits?.length) { const t = el('div', 'traits'); u.traits.slice(0, 6).forEach((x) => t.append(el('span', '', x.value))); c.append(t); }
+  const body = el('div', 'body');
+  const head = el('div', 'head'); head.append(el('h3', '', u.name && u.name.includes('#') ? u.name : `#${u.tokenId}`), el('span', 'lv', `Lv ${u.progress.level}`));
+  body.append(head, statBlock(u.stats), xpBlock(u.progress), el('div', 'rec', recText(u.record)));
+  if (u.traits?.length) { const t = el('div', 'traits'); u.traits.slice(0, 6).forEach((x) => t.append(el('span', '', x.value))); body.append(t); }
+  c.append(avatar(u, u.name), body);
   return c;
 }
 
 function renderCrypt() {
   const g = $('#cryptGrid'); g.replaceChildren();
-  $('#cryptSub').textContent = !S.address ? 'Connect your wallet to see your Undeadz.' : S.undeadz.length ? 'Tap one to make it your fighter.' : 'No Undeadz in this wallet yet.';
+  $('#cryptSub').textContent = !S.address ? 'Connect your wallet to see your Undeadz.'
+    : S.undeadz.length ? `${short(S.address)} holds ${S.undeadz.length} Undeadz. Tap one to make it your fighter.` : `No Undeadz found in ${short(S.address)}.`;
   S.undeadz.forEach((u) => g.append(card(u, { onClick: () => { S.selected = u; renderAll(); go('arena'); } })));
 }
 
@@ -176,10 +180,12 @@ function renderCrypt() {
 function fighterCard(box, f, enemy) {
   box.replaceChildren(); box.className = `fighter${enemy ? ' enemy' : ''}`;
   const c = el('div', 'stone');
-  c.append(avatar(enemy ? { tokenId: 0 } : f, f.name), el('h3', '', enemy ? f.name : `#${f.tokenId}`));
-  if (!enemy) c.append(el('div', 'lv', `Level ${f.progress.level}`));
+  const body = el('div', 'body'); const head = el('div', 'head');
+  head.append(el('h3', '', enemy ? f.name : (f.name && f.name.includes('#') ? f.name : `#${f.tokenId}`)));
+  if (!enemy) head.append(el('span', 'lv', `Lv ${f.progress.level}`));
   const hp = el('div', 'hp'); const bar = el('div', 'bar'); const b = el('b'); bar.append(b); const t = el('small', '', '');
-  hp.append(bar, t); c.append(hp, statBlock(f.stats)); box.append(c);
+  hp.append(bar, t); body.append(head, hp, statBlock(f.stats));
+  c.append(avatar(enemy ? { tokenId: 0 } : f, f.name), body); box.append(c);
   box._hp = { b, t, max: f.stats.health, card: box }; return box;
 }
 function setHp(h, v) { h.b.style.width = `${(v / h.max) * 100}%`; h.b.classList.toggle('low', v / h.max < 0.3); h.t.textContent = `${v} / ${h.max} HP`; }

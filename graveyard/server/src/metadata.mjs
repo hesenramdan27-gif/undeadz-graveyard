@@ -33,6 +33,14 @@ async function getRaw(tokenId) {
   } finally { clearTimeout(t); }
 }
 
+// Metadata that came with the holdings list (indexer) — saves a tokenURI + IPFS round trip.
+export function seedMetadata(tokenId, m) {
+  if (!m || !m.image) return; // incomplete -> let getMetadata fetch properly
+  cache.set(tokenId, { at: Date.now(), meta: {
+    source: 'metadata', name: m.name || `THE UNDEADZ #${tokenId}`, image: resolveUrl(m.image),
+    traits: (m.attributes || []).map((a) => ({ traitType: String(a.trait_type ?? ''), value: String(a.value ?? '') })) } });
+}
+
 export async function getMetadata(tokenId) {
   const ttl = getConfig().metadata.cacheHours * 3600_000;
   const hit = cache.get(tokenId);

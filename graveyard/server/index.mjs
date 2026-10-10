@@ -68,7 +68,7 @@ async function api(req, res, url) {
     catch (e) { throw new game.GameError(e.message, 401); }
   }
 
-  if (p === '/api/me/undeadz' && method === 'GET') return json(res, 200, { undeadz: await game.listMyUndeadz(user()) });
+  if (p === '/api/me/undeadz' && method === 'GET') return json(res, 200, await game.listMyUndeadz(user()));
 
   if (p === '/api/battle' && method === 'POST') {
     const address = user();

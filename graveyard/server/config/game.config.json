@@ -5,7 +5,8 @@
     "chainIdHex": "0x1237",
     "currency": "ETH",
     "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
-    "explorerUrl": "https://robinhoodchain.blockscout.com"
+    "explorerUrl": "https://robinhoodchain.blockscout.com",
+    "indexerApi": "https://robinhoodchain.blockscout.com/api/v2"
   },
   "collection": {
     "name": "THE UNDEADZ",

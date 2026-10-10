@@ -1,8 +1,8 @@
 // Game service: the only place that mutates XP / wins / losses.
 import { randomBytes } from 'node:crypto';
 import { getConfig } from './config.mjs';
-import { ownsToken, tokensOf } from './chain.mjs';
-import { getMetadata } from './metadata.mjs';
+import { ownsToken, holdings } from './chain.mjs';
+import { getMetadata, seedMetadata } from './metadata.mjs';
 import { effectiveStats, levelInfo } from './stats.mjs';
 import { simulate } from './battle.mjs';
 import * as db from './store.mjs';
@@ -28,8 +28,11 @@ export async function describeToken(tokenId) {
 }
 
 export async function listMyUndeadz(address) {
-  const ids = await tokensOf(address);
-  return Promise.all(ids.map(describeToken));
+  let h;
+  try { h = await holdings(address); } catch (e) { throw new GameError(e.message, 502); }
+  h.items.forEach((x) => seedMetadata(x.tokenId, x.meta));
+  const undeadz = await Promise.all(h.items.map((x) => describeToken(x.tokenId)));
+  return { source: h.source, undeadz };
 }
 
 export async function battle(address, tokenId) {

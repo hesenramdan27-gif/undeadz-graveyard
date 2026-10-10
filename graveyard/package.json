@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server/index.mjs",
     "dev": "MOCK_CHAIN=1 node server/index.mjs",
-    "test": "node scripts/test.mjs"
+    "test": "node scripts/test.mjs",
+    "check": "node scripts/check-wallet.mjs"
   },
   "engines": { "node": ">=18" },
   "dependencies": { "ethers": "5.7.2" }

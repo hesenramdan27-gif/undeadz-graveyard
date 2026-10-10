@@ -58,6 +58,26 @@ try {
   assert.equal((await call('/api/admin/config')).status, 404); ok('admin disabled without ADMIN_KEY');
 } finally { srv.kill(); }
 
+// Holdings via indexer (Blockscout v2 shape): pagination, only THE UNDEADZ contract, images + traits kept
+{
+  const { createServer } = await import('node:http');
+  const C = '0xC180F7bb3A73EDAd6D30cF22813F2eBa0fF3042D';
+  const item = (id, token) => ({ id: String(id), image_url: `https://img.example/${id}.png`, token_type: 'ERC-721', token, metadata: { name: `THE UNDEADZ #${id}`, attributes: [{ trait_type: 'Eyes', value: 'Demon Eyes' }] } });
+  const fake = createServer((req, res) => {
+    const u = new URL(req.url, 'http://x');
+    assert.ok(u.pathname.endsWith(`/addresses/${wallet.address}/nft`)); assert.equal(u.searchParams.get('type'), 'ERC-721');
+    res.setHeader('content-type', 'application/json');
+    if (!u.searchParams.get('page')) res.end(JSON.stringify({ items: [item(1842, { address_hash: C }), item(5, { address_hash: '0x1111111111111111111111111111111111111111' })], next_page_params: { page: '2' } }));
+    else res.end(JSON.stringify({ items: [item(291, { address: { hash: C.toLowerCase() } })], next_page_params: null }));
+  }).listen(4555);
+  process.env.INDEXER_URL = 'http://localhost:4555';
+  const { holdings } = await import('../server/src/chain.mjs');
+  const h = await holdings(wallet.address);
+  assert.equal(h.source, 'indexer'); assert.deepEqual(h.items.map((x) => x.tokenId), [291, 1842]);
+  assert.equal(h.items[1].meta.image, 'https://img.example/1842.png'); assert.equal(h.items[1].meta.attributes[0].value, 'Demon Eyes');
+  fake.close(); ok('holdings: real NFT image + traits per wallet, other collections filtered, pagination');
+}
+
 // Balance + determinism checks (direct import)
 const { simulate } = await import('../server/src/battle.mjs');
 const { effectiveStats } = await import('../server/src/stats.mjs');
