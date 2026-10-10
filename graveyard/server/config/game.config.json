@@ -1,0 +1,150 @@
+{
+  "chain": {
+    "name": "Robinhood Chain",
+    "chainId": 4663,
+    "chainIdHex": "0x1237",
+    "currency": "ETH",
+    "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
+    "explorerUrl": "https://robinhoodchain.blockscout.com"
+  },
+  "collection": {
+    "name": "THE UNDEADZ",
+    "nftContract": "0xc180f7bb3a73edad6d30cf22813f2eba0ff3042d",
+    "standard": "ERC-721",
+    "maxSupply": 3333,
+    "firstTokenId": 1,
+    "website": "https://www.theundeadz.online/"
+  },
+  "metadata": {
+    "source": "tokenURI",
+    "ipfsGateway": "https://ipfs.io/ipfs/",
+    "fetchTimeoutMs": 8000,
+    "cacheHours": 24,
+    "maxTokensShown": 100
+  },
+  "stats": {
+    "base": {
+      "attack": 50,
+      "defense": 50,
+      "speed": 50,
+      "luck": 50,
+      "critChance": 5,
+      "health": 100
+    },
+    "budgetCap": 262,
+    "maxCritChance": 40,
+    "rarityMaxPoints": 6,
+    "hashFallback": {
+      "enabled": true,
+      "maxPoints": 4
+    },
+    "traitRules": [
+      {
+        "traitType": "",
+        "value": "bee",
+        "bonus": {
+          "luck": 10
+        }
+      },
+      {
+        "traitType": "",
+        "value": "demon eyes",
+        "bonus": {
+          "critChance": 8
+        }
+      },
+      {
+        "traitType": "",
+        "value": "skull",
+        "bonus": {
+          "attack": 10
+        }
+      },
+      {
+        "traitType": "",
+        "value": "armor",
+        "bonus": {
+          "defense": 10
+        }
+      },
+      {
+        "traitType": "",
+        "value": "speed",
+        "bonus": {
+          "speed": 10
+        }
+      }
+    ]
+  },
+  "battle": {
+    "attackScale": 0.6,
+    "defenseScale": 0.3,
+    "variance": 0.15,
+    "minDamage": 3,
+    "critPerLuck": 0.12,
+    "critMultiplier": 1.6,
+    "dodgeBase": 3,
+    "dodgePerLuck": 0.1,
+    "dodgePerSpeed": 0.08,
+    "dodgeCap": 25,
+    "maxRounds": 10,
+    "hpPerLevel": 3
+  },
+  "enemy": {
+    "difficultyMin": 0.9,
+    "difficultyMax": 1.1,
+    "specialize": 14,
+    "names": [
+      "Grave Rat",
+      "Moss Ghoul",
+      "Crypt Keeper Jr.",
+      "Lantern Wraith",
+      "Bone Courier",
+      "Mud Zombie",
+      "Night Gardener",
+      "Coffin Crawler"
+    ],
+    "scaleToPlayer": 0.5
+  },
+  "xp": {
+    "win": 100,
+    "loss": 25,
+    "draw": 50
+  },
+  "levels": [
+    0,
+    100,
+    250,
+    500,
+    850,
+    1300,
+    1850,
+    2500,
+    3250,
+    4100,
+    5000
+  ],
+  "levelBonus": {
+    "perLevel": {
+      "attack": 1,
+      "defense": 1,
+      "speed": 1,
+      "luck": 0
+    },
+    "maxBonusPerStat": 8
+  },
+  "limits": {
+    "battleCooldownSec": 6,
+    "maxXpBattlesPerDay": 60,
+    "ownershipCacheSec": 0
+  },
+  "abilities": {
+    "enabled": false
+  },
+  "missions": {
+    "enabled": false
+  },
+  "tournaments": {
+    "enabled": false
+  }
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#100d1b" />
+  <title>THE UNDEADZ — Graveyard</title>
+  <meta name="description" content="Wake your Undeadz and fight. Connect, pick, battle." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/game.js" type="module"></script>
+</head>
+<body>
+<div class="fog" aria-hidden="true"></div>
+<header class="top">
+  <a class="brand" href="#graveyard"><img src="/logo.svg" alt="" width="34" height="34" /><span>The Undeadz <small>Graveyard</small></span></a>
+  <nav class="tabs" id="tabs" aria-label="Game sections">
+    <button data-view="graveyard" class="on">Graveyard</button>
+    <button data-view="crypt">Crypt</button>
+    <button data-view="arena">Arena</button>
+    <button data-view="board">Leaderboard</button>
+    <button data-view="soon">Coming soon</button>
+  </nav>
+  <button id="walletBtn" class="wallet">Connect wallet</button>
+</header>
+
+<main>
+  <!-- GRAVEYARD: connect -> pick -> battle in three taps -->
+  <section id="view-graveyard" class="view on">
+    <div class="hero">
+      <div>
+        <h1>Wake your Undeadz.<br />Send it into the arena.</h1>
+        <p class="lead">Every Undeadz you own is a fighter. Its traits decide its strengths, every win levels it up, and the whole crypt is watching the leaderboard.</p>
+        <button id="mainCta" class="btn big">Connect wallet</button>
+        <p class="hint" id="heroHint">Free to sign in. No gas, no transactions, no seed phrase. Ever.</p>
+      </div>
+      <ol class="steps" id="steps">
+        <li data-step="1" class="now"><b>Connect</b><span>Link your wallet on Robinhood Chain</span></li>
+        <li data-step="2"><b>Pick</b><span>Choose one of your Undeadz</span></li>
+        <li data-step="3"><b>Battle</b><span>About 15 seconds per fight</span></li>
+      </ol>
+    </div>
+    <p class="notice" id="notice" role="status" hidden></p>
+  </section>
+
+  <!-- CRYPT -->
+  <section id="view-crypt" class="view">
+    <h2>Your crypt</h2>
+    <p class="sub" id="cryptSub">Connect your wallet to see your Undeadz.</p>
+    <div class="crypt" id="cryptGrid"></div>
+  </section>
+
+  <!-- ARENA -->
+  <section id="view-arena" class="view">
+    <div id="arenaEmpty" class="empty"><p>Pick an Undeadz in your crypt first.</p><button class="btn" data-go="crypt">Open crypt</button></div>
+    <div id="arenaMain" hidden>
+      <div class="ring">
+        <div class="fighter" id="fighterA"></div>
+        <div class="mid"><div class="vs">VS</div><div class="round" id="roundLabel" aria-live="polite"></div></div>
+        <div class="fighter" id="fighterB"></div>
+      </div>
+      <div class="controls">
+        <button id="fightBtn" class="btn big">Fight</button>
+        <button id="skipBtn" class="btn ghost" hidden>Skip to result</button>
+      </div>
+      <ul class="feed" id="feed" aria-live="polite"></ul>
+      <div class="result" id="result" hidden></div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section id="view-board" class="view">
+    <h2>Leaderboard</h2>
+    <div class="filters">
+      <div class="seg" id="boardType"><button data-t="undeadz" class="on">Top Undeadz</button><button data-t="players">Top players</button></div>
+      <select id="boardSort" aria-label="Sort by"><option value="wins">Most wins</option><option value="xp">Most XP</option><option value="winRate">Best win rate (5+ fights)</option></select>
+    </div>
+    <div class="tablewrap"><table id="boardTable"></table></div>
+  </section>
+
+  <!-- COMING SOON -->
+  <section id="view-soon" class="view">
+    <h2>Coming soon</h2>
+    <div class="soon">
+      <article><h3>Tournaments</h3><p>Weekly cup. One Undeadz, bracket from round of 16 to the final.</p></article>
+      <article><h3>Evolution</h3><p>Reach level 10 and unlock a new look and ability.</p></article>
+      <article><h3>Rewards</h3><p>Missions, daily goals and achievements.</p></article>
+    </div>
+  </section>
+</main>
+
+<footer class="foot"><span>XP and wins live on the game server. Your NFTs never leave your wallet.</span><a href="https://www.theundeadz.online/" target="_blank" rel="noreferrer">Official site</a></footer>
+<div id="picker" class="picker" hidden role="dialog" aria-modal="true" aria-label="Choose a wallet"><div class="sheet"><h3>Choose a wallet</h3><div id="pickerList"></div><button class="btn ghost" id="pickerClose">Cancel</button></div></div>
+</body>
+</html>

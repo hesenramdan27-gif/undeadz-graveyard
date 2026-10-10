@@ -1,0 +1,14 @@
+{
+  "name": "the-undeadz-graveyard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "THE UNDEADZ — GRAVEYARD: wallet-verified NFT battle game (V1 MVP)",
+  "scripts": {
+    "start": "node server/index.mjs",
+    "dev": "MOCK_CHAIN=1 node server/index.mjs",
+    "test": "node scripts/test.mjs"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": { "ethers": "5.7.2" }
+}
