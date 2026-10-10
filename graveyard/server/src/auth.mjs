@@ -26,7 +26,7 @@ export function buildMessage(address, nonce, issued, expires) {
 }
 
 export function issueNonce(address) {
-  const addr = ethers.utils.getAddress(address);
+  const addr = ethers.getAddress(address);
   const nonce = randomBytes(16).toString('hex');
   const issued = Date.now();
   const expires = issued + NONCE_TTL_MS;
@@ -36,11 +36,11 @@ export function issueNonce(address) {
 }
 
 export function verifySignature(address, signature) {
-  const addr = ethers.utils.getAddress(address);
+  const addr = ethers.getAddress(address);
   const rec = nonces.get(addr.toLowerCase());
   if (!rec || rec.expires < Date.now()) throw new Error('Sign-in request expired. Try again.');
   nonces.delete(addr.toLowerCase()); // single use
-  const recovered = ethers.utils.verifyMessage(buildMessage(addr, rec.nonce, rec.issued, rec.expires), signature);
+  const recovered = ethers.verifyMessage(buildMessage(addr, rec.nonce, rec.issued, rec.expires), signature);
   if (recovered.toLowerCase() !== addr.toLowerCase()) throw new Error('Signature does not match this wallet.');
   return makeToken(addr.toLowerCase());
 }

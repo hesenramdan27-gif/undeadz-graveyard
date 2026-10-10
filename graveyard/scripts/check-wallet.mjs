@@ -6,13 +6,13 @@ import { getMetadata, seedMetadata } from '../server/src/metadata.mjs';
 import { baseStats } from '../server/src/stats.mjs';
 
 const address = process.argv[2];
-if (!ethers.utils.isAddress(address || '')) { console.error('Usage: npm run check -- 0xWalletAddress'); process.exit(1); }
+if (!ethers.isAddress(address || '')) { console.error('Usage: npm run check -- 0xWalletAddress'); process.exit(1); }
 const { chain, collection } = getConfig();
 console.log(`Chain: ${chain.name} (${chain.chainId})  RPC: ${chain.rpcUrl}\nContract: ${collection.nftContract}\nWallet: ${address}\n`);
 
 try {
-  const net = await new ethers.providers.JsonRpcProvider(chain.rpcUrl).getNetwork();
-  console.log(`RPC reachable, chainId = ${net.chainId} ${net.chainId === chain.chainId ? '(matches)' : '(MISMATCH!)'}`);
+  const net = await new ethers.JsonRpcProvider(chain.rpcUrl, chain.chainId, { staticNetwork: true }).getNetwork();
+  console.log(`RPC reachable, chainId = ${Number(net.chainId)} ${Number(net.chainId) === chain.chainId ? '(matches)' : '(MISMATCH!)'}`);
 } catch (e) { console.log('RPC NOT reachable:', e.message); }
 
 try {

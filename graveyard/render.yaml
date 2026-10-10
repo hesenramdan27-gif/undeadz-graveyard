@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: undeadz-graveyard
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_KEY
+        generateValue: true
+    # To keep XP/wins across deploys: add the disk below AND set env DATA_DIR=/var/data.
+    # XP/wins are stored in DATA_DIR. On Render this survives redeploys ONLY with a persistent disk (paid plans):
+    # disk:
+    #   name: game-data
+    #   mountPath: /var/data
+    #   sizeGB: 1

@@ -18,7 +18,7 @@ let contract;
 function nft() {
   if (contract) return contract;
   const { chain, collection } = getConfig();
-  const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, { chainId: chain.chainId, name: 'robinhood' });
+  const provider = new ethers.JsonRpcProvider(chain.rpcUrl, chain.chainId, { staticNetwork: true });
   contract = new ethers.Contract(collection.nftContract, ABI, provider);
   return contract;
 }
@@ -56,12 +56,12 @@ export async function tokensOf(address) {
   const { collection, metadata } = getConfig();
   if (MOCK) return (mockOwners[addr] || []).slice(0, metadata.maxTokensShown);
   const c = nft();
-  const balance = (await c.balanceOf(address)).toNumber();
+  const balance = Number(await c.balanceOf(address));
   if (balance === 0) return [];
   try {
     const n = Math.min(balance, metadata.maxTokensShown);
     const ids = await Promise.all(Array.from({ length: n }, (_, i) => c.tokenOfOwnerByIndex(address, i)));
-    return ids.map((b) => b.toNumber()).sort((a, b) => a - b);
+    return ids.map((b) => Number(b)).sort((a, b) => a - b);
   } catch {
     if (!scanCache.map || Date.now() - scanCache.at > 60_000) {
       const map = new Map();

@@ -11,5 +11,5 @@
     "check": "node scripts/check-wallet.mjs"
   },
   "engines": { "node": ">=18" },
-  "dependencies": { "ethers": "5.7.2" }
+  "dependencies": { "ethers": "6.17.0" }
 }

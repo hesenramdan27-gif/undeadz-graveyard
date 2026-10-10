@@ -4,9 +4,16 @@ import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from '
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const dir = process.env.DATA_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), '../../data');
+const localDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../data');
+let dir = process.env.DATA_DIR || localDir;
+try { mkdirSync(dir, { recursive: true }); }
+catch (e) {
+  // e.g. DATA_DIR=/var/data but no persistent disk is mounted: don't crash, but warn loudly.
+  console.warn(`[store] Cannot use DATA_DIR "${dir}" (${e.code}). Falling back to ${localDir} — progress will be LOST on redeploy. Mount a persistent disk or unset DATA_DIR.`);
+  dir = localDir;
+  mkdirSync(dir, { recursive: true });
+}
 const file = path.join(dir, 'db.json');
-mkdirSync(dir, { recursive: true });
 
 let db = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { tokens: {}, players: {}, history: [] };
 let timer = null;
